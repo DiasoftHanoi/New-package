@@ -1,0 +1,840 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram><Items>
+<Item><ItemNumber>1</ItemNumber>
+ <ItemGUID>960BC6B2-7014-4EB5-821F-A4A64FF05277</ItemGUID>
+ 
+<ItemType>TStartItem</ItemType>
+<ItemName>StartItem1</ItemName>
+<ItemCaption>Начало процесса</ItemCaption>
+<ItemDescription>Исполнение процесса PageFlow начинается с этого элемента
+
+</ItemDescription>
+<ItemTop>16</ItemTop>
+<ItemLeft>86</ItemLeft>
+<ItemWidth>195</ItemWidth>
+<ItemHeight>60</ItemHeight>
+</Item>
+<Item><ItemNumber>2</ItemNumber>
+ <ItemGUID>CCC6EACB-7286-47FE-AE6C-38575352D4C1</ItemGUID>
+ 
+<ItemType>TEndItem</ItemType>
+<ItemName>EndItem1</ItemName>
+<ItemCaption>Завершение процесса</ItemCaption>
+<ItemDescription>Исполнение процесса PageFlow будет завершено при достижении этого элемента
+
+</ItemDescription>
+<ItemTop>517</ItemTop>
+<ItemLeft>582</ItemLeft>
+<ItemWidth>195</ItemWidth>
+<ItemHeight>60</ItemHeight>
+</Item>
+<Item><ItemNumber>3</ItemNumber>
+ <ItemGUID>03EADBA1-152A-467A-B494-4C326882A42F</ItemGUID>
+ 
+<ItemType>TRemoteAction</ItemType>
+<ItemName>RemoteAction2</ItemName>
+<ItemCaption>Параметры Заявки</ItemCaption>
+<ItemDescription>[frontws2]?documentGetByIdOld
+</ItemDescription>
+<ItemTop>184</ItemTop>
+<ItemLeft>86</ItemLeft>
+<ItemWidth>195</ItemWidth>
+<ItemHeight>60</ItemHeight>
+<ItemData><![CDATA[[frontws2]?documentGetByIdOld]]></ItemData>
+<ItemCallMode>cmSyncCall</ItemCallMode>
+<ItemIncludeSessionVariables>False</ItemIncludeSessionVariables>
+<ItemUserAuthentication>True</ItemUserAuthentication>
+<ItemInputParam name="DOCUMENTID" type="LONG" mappedto="PROCESS" value="APPLICATIONID" describe=""></ItemInputParam>
+<ItemOutputParam name="Result" type="OBJECT" mappedto="PROCESS" value="applicationMap" describe=""></ItemOutputParam>
+</Item>
+<Item><ItemNumber>4</ItemNumber>
+ <ItemGUID>2A380343-86C9-4C5C-8B4A-DB2085E188DC</ItemGUID>
+ 
+<ItemType>TCaseOpItem</ItemType>
+<ItemName>CaseOpItem1</ItemName>
+<ItemCaption>Нужен отчет?</ItemCaption>
+<ItemDescription>Описание данного шага процесса
+</ItemDescription>
+<ItemTop>366</ItemTop>
+<ItemLeft>79</ItemLeft>
+<ItemWidth>600</ItemWidth>
+<ItemHeight>60</ItemHeight>
+<ItemData><![CDATA[var ReportInfo = getInputParams("ReportInfo") || new java.util.HashMap(); 
+var isNeedReport = ReportInfo.get("isNeedReport");
+
+setOutputParams("AttachType", ReportInfo.get("AttachType")); 
+setOutputParams("FileType", ReportInfo.get("FileType")); 
+setOutputParams("FileName", ReportInfo.get("FileName")); 
+   
+if(isNeedReport == true || isNeedReport+"" == "true"){
+      return "GO";
+}
+else{
+     return "EXIT";
+}
+
+]]></ItemData>
+<CaseType>JavaScript</CaseType>
+<ItemInputParam name="ReportInfo" type="OBJECT" mappedto="PROCESS" value="ReportInfo" describe=""></ItemInputParam>
+<ItemOutputParam name="AttachType" type="STRING" mappedto="PROCESS" value="AttachType" describe=""></ItemOutputParam>
+<ItemOutputParam name="FileType" type="STRING" mappedto="PROCESS" value="FileType" describe=""></ItemOutputParam>
+<ItemOutputParam name="FileName" type="STRING" mappedto="PROCESS" value="FileName" describe=""></ItemOutputParam>
+</Item>
+<Item><ItemNumber>5</ItemNumber>
+ <ItemGUID>F8D323E8-3734-491A-80DD-7BE426699C45</ItemGUID>
+ 
+<ItemType>TJavaScriptItem</ItemType>
+<ItemName>JavaScriptItem1</ItemName>
+<ItemCaption>Prepare params</ItemCaption>
+<ItemDescription></ItemDescription>
+<ItemTop>274</ItemTop>
+<ItemLeft>83</ItemLeft>
+<ItemWidth>200</ItemWidth>
+<ItemHeight>60</ItemHeight>
+<ItemData><![CDATA[var applicationMap = getInputParams("applicationMap") || new java.util.HashMap();
+
+var TYPESYSNAME = applicationMap.get("TYPESYSNAME");
+var ApplicationId = applicationMap.get("DOCUMENTID");
+var ApplicationNumber = applicationMap.get("DOCUMENTNUMBER");
+var ApplicationBranchId = applicationMap.get("BRANCHID"); 
+var STATE = applicationMap.get("STATE");                     
+var STRING4 = applicationMap.get("STRING4"); 
+var flowSysName = applicationMap.get("LOSAutoCheckVerification"); 
+var assetsList = applicationMap.get("assetsList") || new java.util.ArrayList();
+var ReportInfo = applicationMap.get("ReportInfo"); 
+var LoanType = applicationMap.get("creditExtensionMethodSysName")||"";   // не обязательный
+
+var assetsList = applicationMap.get("assetsList");
+var isCollateral = "false; "     ///root/assetsList[00001]/isCollateral
+for (var i = 0, countI = assetsList.size(); i < countI; i++){
+     var assetsMap = assetsList.get(i);
+     isCollateral = assetsMap.get("isCollateral");
+}
+
+var CLIENTID = applicationMap.get("CLIENTID"); 
+var PersonIDList = new java.util.ArrayList();
+var map = new java.util.HashMap();
+map.put("PersonID", CLIENTID);
+PersonIDList.add(map);
+
+setOutputParams("ApplicationId", ApplicationId);
+setOutputParams("ApplicationNumber", ApplicationNumber);
+setOutputParams("ApplicationBranchId", ApplicationBranchId); 
+setOutputParams("flowSysName", flowSysName); 
+setOutputParams("LoanType", LoanType); 
+setOutputParams("assetsList", assetsList); 
+ 
+setOutputParams("CLIENTID", CLIENTID); 
+setOutputParams("STATE", STATE); 
+setOutputParams("PersonIDList", PersonIDList);
+setOutputParams("TYPESYSNAME", TYPESYSNAME);
+setOutputParams("isCollateral", isCollateral);    
+setOutputParams("STRING4", STRING4);
+setOutputParams("ReportInfo", ReportInfo);
+]]></ItemData>
+<ItemInputParam name="applicationMap" type="OBJECT" mappedto="PROCESS" value="applicationMap" describe=""></ItemInputParam>
+<ItemInputParam name="decisionRefLinkList" type="OBJECT" mappedto="PROCESS" value="decisionRefLinkList" describe=""></ItemInputParam>
+<ItemOutputParam name="ReportInfo" type="OBJECT" mappedto="PROCESS" value="ReportInfo" describe=""></ItemOutputParam>
+<ItemOutputParam name="assetsList" type="OBJECT" mappedto="PROCESS" value="assetsList" describe=""></ItemOutputParam>
+<ItemOutputParam name="flowSysName" type="STRING" mappedto="PROCESS" value="flowSysName" describe=""></ItemOutputParam>
+<ItemOutputParam name="TYPESYSNAME" type="STRING" mappedto="PROCESS" value="TYPESYSNAME" describe=""></ItemOutputParam>
+<ItemOutputParam name="STATE" type="STRING" mappedto="PROCESS" value="STATE" describe=""></ItemOutputParam>
+<ItemOutputParam name="REFSYSNAME" type="STRING" mappedto="PROCESS" value="REFSYSNAME" describe=""></ItemOutputParam>
+<ItemOutputParam name="LoanType" type="STRING" mappedto="PROCESS" value="LoanType" describe=""></ItemOutputParam>
+<ItemOutputParam name="CLIENTID" type="LONG" mappedto="PROCESS" value="CLIENTID" describe=""></ItemOutputParam>
+<ItemOutputParam name="ApplicationBranchId" type="LONG" mappedto="PROCESS" value="ApplicationBranchId" describe=""></ItemOutputParam>
+<ItemOutputParam name="ApplicationNumber" type="STRING" mappedto="PROCESS" value="ApplicationNumber" describe=""></ItemOutputParam>
+<ItemOutputParam name="ApplicationId" type="LONG" mappedto="PROCESS" value="ApplicationId" describe=""></ItemOutputParam>
+<ItemOutputParam name="PersonIDList" type="OBJECT" mappedto="PROCESS" value="PersonIDList" describe=""></ItemOutputParam>
+<ItemOutputParam name="STRING4" type="STRING" mappedto="PROCESS" value="STRING4" describe=""></ItemOutputParam>
+</Item>
+<Item><ItemNumber>6</ItemNumber>
+ <ItemGUID>AFDF923C-51D4-4870-B3F8-681EABD3BD80</ItemGUID>
+ 
+<ItemType>TRemoteAction</ItemType>
+<ItemName>RemoteAction1</ItemName>
+<ItemCaption>Get Person data</ItemCaption>
+<ItemDescription>Step 2
+</ItemDescription>
+<ItemTop>531</ItemTop>
+<ItemLeft>82</ItemLeft>
+<ItemWidth>196</ItemWidth>
+<ItemHeight>60</ItemHeight>
+<ItemData><![CDATA[[crmws]?dsPersonFindListByID3]]></ItemData>
+<ItemCallMode>cmSyncCall</ItemCallMode>
+<ItemIncludeSessionVariables>False</ItemIncludeSessionVariables>
+<ItemUserAuthentication>True</ItemUserAuthentication>
+<ItemInputParam name="PersonIDList" type="OBJECT" mappedto="PROCESS" value="PersonIDList" describe=""></ItemInputParam>
+<ItemInputParam name="AddressListFlag" type="BOOLEAN" mappedto="CONSTANTS" value="false" describe=""></ItemInputParam>
+<ItemInputParam name="IdentityCardListFlag" type="BOOLEAN" mappedto="CONSTANTS" value="false" describe=""></ItemInputParam>
+<ItemInputParam name="ContactListFlag" type="BOOLEAN" mappedto="CONSTANTS" value="false" describe=""></ItemInputParam>
+<ItemInputParam name="SegmentListFlag" type="BOOLEAN" mappedto="CONSTANTS" value="false" describe=""></ItemInputParam>
+<ItemInputParam name="LinkedOfficerListFlag" type="BOOLEAN" mappedto="CONSTANTS" value="false" describe=""></ItemInputParam>
+<ItemInputParam name="LicenseListFlag" type="BOOLEAN" mappedto="CONSTANTS" value="false" describe=""></ItemInputParam>
+<ItemInputParam name="GroupListFlag" type="BOOLEAN" mappedto="CONSTANTS" value="false" describe=""></ItemInputParam>
+<ItemInputParam name="FinancialInfoListFlag" type="BOOLEAN" mappedto="CONSTANTS" value="false" describe=""></ItemInputParam>
+<ItemInputParam name="ExtendedAttrListFlag" type="BOOLEAN" mappedto="CONSTANTS" value="false" describe=""></ItemInputParam>
+<ItemInputParam name="EmploymentListFlag" type="BOOLEAN" mappedto="CONSTANTS" value="false" describe=""></ItemInputParam>
+<ItemInputParam name="EducationListFlag" type="BOOLEAN" mappedto="CONSTANTS" value="false" describe=""></ItemInputParam>
+<ItemInputParam name="CodeListFlag" type="BOOLEAN" mappedto="CONSTANTS" value="false" describe=""></ItemInputParam>
+<ItemInputParam name="CitizenCountryListFlag" type="BOOLEAN" mappedto="CONSTANTS" value="false" describe=""></ItemInputParam>
+<ItemInputParam name="ExtraAttrListFlag" type="BOOLEAN" mappedto="CONSTANTS" value="false" describe=""></ItemInputParam>
+<ItemOutputParam name="Result" type="OBJECT" mappedto="PROCESS" value="PersonResultListMap" describe=""></ItemOutputParam>
+</Item>
+<Item><ItemNumber>7</ItemNumber>
+ <ItemGUID>CB723D4B-A888-49BF-9FDC-67F0F948A35C</ItemGUID>
+ 
+<ItemType>TJavaScriptItem</ItemType>
+<ItemName>JavaScriptItem2</ItemName>
+<ItemCaption>Prepare params 2</ItemCaption>
+<ItemDescription></ItemDescription>
+<ItemTop>619</ItemTop>
+<ItemLeft>79</ItemLeft>
+<ItemWidth>200</ItemWidth>
+<ItemHeight>60</ItemHeight>
+<ItemData><![CDATA[var PersonResultListMap = getInputParams("PersonResultListMap") || new java.util.HashMap(); 
+var PersonFindList = PersonResultListMap.get("PersonFindList");
+var CustomerName = "";
+for (var i = 0, countI = PersonFindList.size(); i < countI; i++){
+     var PersonFindMap = PersonFindList.get(i);
+     CustomerName = PersonFindMap.get("Name");
+}
+setOutputParams("CustomerName", CustomerName);
+]]></ItemData>
+<ItemInputParam name="PersonResultListMap" type="OBJECT" mappedto="PROCESS" value="PersonResultListMap" describe=""></ItemInputParam>
+<ItemOutputParam name="CustomerName" type="STRING" mappedto="PROCESS" value="CustomerName" describe=""></ItemOutputParam>
+</Item>
+<Item><ItemNumber>8</ItemNumber>
+ <ItemGUID>F6E3885C-D43C-46BE-90D5-A65EF9C89AD7</ItemGUID>
+ 
+<ItemType>TRemoteAction</ItemType>
+<ItemName>RemoteAction4</ItemName>
+<ItemCaption>dsLOSIntegrationReportGenerate </ItemCaption>
+<ItemDescription>Step 2
+</ItemDescription>
+<ItemTop>704</ItemTop>
+<ItemLeft>77</ItemLeft>
+<ItemWidth>196</ItemWidth>
+<ItemHeight>60</ItemHeight>
+<ItemData><![CDATA[[fttpbankadtws]?dsLOSIntegrationReportGenerate]]></ItemData>
+<ItemCallMode>cmSyncCall</ItemCallMode>
+<ItemIncludeSessionVariables>False</ItemIncludeSessionVariables>
+<ItemUserAuthentication>True</ItemUserAuthentication>
+<ItemInputParam name="FileType" type="STRING" mappedto="PROCESS" value="FileType" describe=""></ItemInputParam>
+<ItemInputParam name="AttachType" type="STRING" mappedto="PROCESS" value="AttachType" describe=""></ItemInputParam>
+<ItemInputParam name="LoanType" type="STRING" mappedto="PROCESS" value="LoanType" describe=""></ItemInputParam>
+<ItemInputParam name="ApplicationBranchId" type="LONG" mappedto="PROCESS" value="ApplicationBranchId" describe=""></ItemInputParam>
+<ItemInputParam name="ApplicationNumber" type="STRING" mappedto="PROCESS" value="ApplicationNumber" describe=""></ItemInputParam>
+<ItemInputParam name="ApplicationId" type="LONG" mappedto="PROCESS" value="ApplicationId" describe=""></ItemInputParam>
+<ItemInputParam name="CustomerName" type="STRING" mappedto="PROCESS" value="CustomerName" describe=""></ItemInputParam>
+<ItemInputParam name="FileName" type="STRING" mappedto="PROCESS" value="FileName" describe=""></ItemInputParam>
+<ItemOutputParam name="ECMFileId" type="STRING" mappedto="PROCESS" value="ECMFileId" describe=""></ItemOutputParam>
+</Item>
+<Item><ItemNumber>9</ItemNumber>
+ <ItemGUID>A7E153F6-9CFB-47AA-9FA0-D54B0DBCDE59</ItemGUID>
+ 
+<ItemType>TJavaScriptItem</ItemType>
+<ItemName>JavaScriptItem3</ItemName>
+<ItemCaption>Обработка ответа</ItemCaption>
+<ItemDescription></ItemDescription>
+<ItemTop>801</ItemTop>
+<ItemLeft>74</ItemLeft>
+<ItemWidth>200</ItemWidth>
+<ItemHeight>60</ItemHeight>
+<ItemData><![CDATA[var ECMFileId = getInputParams("ECMFileId") || ""; 
+function generateUUID() {
+    var d = new Date().getTime();   
+    //var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {  //Правки по задаче 2378098 - уменьшить маску формирования до 12 знаков
+    var uuid = 'xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = (d + Math.random()*16)%16 | 0;
+        d = Math.floor(d/16);
+        return (c=='x' ? r : (r&0x3|0x8)).toString(16);
+    });
+    return uuid;
+};
+
+var CustomProperties = new java.util.HashMap();
+CustomProperties.put("xref", "LOS-" + generateUUID());
+
+setOutputParams("FileID", ECMFileId);
+setOutputParams("Storage", "fileSystem");
+setOutputParams("xref", "LOS-" + generateUUID());
+setOutputParams("CustomProperties", CustomProperties);
+setOutputParams("FILESIZE","12356822");
+setOutputParams("CREATIONDATE", new java.util.Date());
+setOutputParams("ATTDOCNAME", ECMFileId);
+
+
+
+var fileInfoList = new java.util.ArrayList();
+var fileInfoMap  = new java.util.HashMap();
+fileInfoMap.put("STORAGE", "LosEcm");
+fileInfoMap.put("IDENTIFIER", ECMFileId);
+fileInfoList.add(fileInfoMap);
+setOutputParams("fileInfoList", fileInfoList);
+
+]]></ItemData>
+<ItemInputParam name="ECMFileId" type="STRING" mappedto="PROCESS" value="ECMFileId" describe=""></ItemInputParam>
+<ItemOutputParam name="CustomProperties" type="OBJECT" mappedto="PROCESS" value="CustomProperties" describe=""></ItemOutputParam>
+<ItemOutputParam name="Storage" type="STRING" mappedto="PROCESS" value="Storage" describe=""></ItemOutputParam>
+<ItemOutputParam name="FileID" type="STRING" mappedto="PROCESS" value="FileID" describe=""></ItemOutputParam>
+<ItemOutputParam name="FILESIZE" type="STRING" mappedto="PROCESS" value="FILESIZE" describe=""></ItemOutputParam>
+<ItemOutputParam name="XREF" type="STRING" mappedto="PROCESS" value="XREF" describe=""></ItemOutputParam>
+<ItemOutputParam name="CREATIONDATE" type="DATETIME" mappedto="PROCESS" value="CREATIONDATE" describe=""></ItemOutputParam>
+<ItemOutputParam name="ATTDOCNAME" type="STRING" mappedto="PROCESS" value="ATTDOCNAME" describe=""></ItemOutputParam>
+<ItemOutputParam name="fileInfoList" type="OBJECT" mappedto="PROCESS" value="fileInfoList" describe=""></ItemOutputParam>
+</Item>
+<Item><ItemNumber>10</ItemNumber>
+ <ItemGUID>2744793B-5F60-4FC0-8509-CC991E3C9022</ItemGUID>
+ 
+<ItemType>TRemoteAction</ItemType>
+<ItemName>RemoteAction5</ItemName>
+<ItemCaption>Сохранить аттач в базу</ItemCaption>
+<ItemDescription></ItemDescription>
+<ItemTop>700</ItemTop>
+<ItemLeft>586</ItemLeft>
+<ItemWidth>195</ItemWidth>
+<ItemHeight>60</ItemHeight>
+<ItemData><![CDATA[[frontws2]?attachmentCreate]]></ItemData>
+<ItemCallMode>cmSyncCall</ItemCallMode>
+<ItemIncludeSessionVariables>False</ItemIncludeSessionVariables>
+<ItemUserAuthentication>True</ItemUserAuthentication>
+<ItemInputParam name="ATTDOCNAME" type="STRING" mappedto="PROCESS" value="ATTDOCNAME" describe=""></ItemInputParam>
+<ItemInputParam name="CONTENTTYPE" type="STRING" mappedto="PROCESS" value="ContentType" describe=""></ItemInputParam>
+<ItemInputParam name="OBJTYPENAME" type="STRING" mappedto="PROCESS" value="TYPESYSNAME" describe=""></ItemInputParam>
+<ItemInputParam name="OBJECTID" type="STRING" mappedto="PROCESS" value="APPLICATIONID" describe=""></ItemInputParam>
+<ItemInputParam name="ATTACHTYPENAME" type="STRING" mappedto="PROCESS" value="AttachType" describe=""></ItemInputParam>
+<ItemInputParam name="ATTNAME" type="STRING" mappedto="PROCESS" value="FileName" describe=""></ItemInputParam>
+<ItemInputParam name="ATTFILEPATH" type="STRING" mappedto="PROCESS" value="FileInfoIDnew" describe=""></ItemInputParam>
+<ItemInputParam name="ATTSIZE" type="STRING" mappedto="PROCESS" value="FileSize" describe=""></ItemInputParam>
+<ItemInputParam name="CREATIONDATE" type="DATETIME" mappedto="PROCESS" value="CREATIONDATE" describe=""></ItemInputParam>
+<ItemInputParam name="CREATEDBY" type="STRING" mappedto="PROCESS" value="USERFIO" describe=""></ItemInputParam>
+</Item>
+<Item><ItemNumber>11</ItemNumber>
+ <ItemGUID>54E24BB9-B4AF-4017-9ADD-4778F9F3A7EC</ItemGUID>
+ 
+<ItemType>TRemoteAction</ItemType>
+<ItemName>RemoteAction6</ItemName>
+<ItemCaption>Скачиваем аттач из ECM</ItemCaption>
+<ItemDescription></ItemDescription>
+<ItemTop>898</ItemTop>
+<ItemLeft>78</ItemLeft>
+<ItemWidth>195</ItemWidth>
+<ItemHeight>60</ItemHeight>
+<ItemData><![CDATA[[ftfilestoragews]?dsFileStorageExecuteDownload]]></ItemData>
+<ItemCallMode>cmSyncCall</ItemCallMode>
+<ItemIncludeSessionVariables>False</ItemIncludeSessionVariables>
+<ItemUserAuthentication>True</ItemUserAuthentication>
+<ItemInputParam name="Storage" type="STRING" mappedto="CONSTANTS" value="LosEcm" describe=""></ItemInputParam>
+<ItemInputParam name="FileID" type="STRING" mappedto="PROCESS" value="FileID" describe=""></ItemInputParam>
+<ItemInputParam name="CustomProperties" type="OBJECT" mappedto="PROCESS" value="CustomProperties" describe=""></ItemInputParam>
+<ItemOutputParam name="File" type="OBJECT" mappedto="PROCESS" value="File" describe=""></ItemOutputParam>
+</Item>
+<Item><ItemNumber>12</ItemNumber>
+ <ItemGUID>64022A01-D782-42F9-BE4F-32C797511915</ItemGUID>
+ 
+<ItemType>TRemoteAction</ItemType>
+<ItemName>RemoteAction7</ItemName>
+<ItemCaption>Сохраняем файл в fileSystem временно</ItemCaption>
+<ItemDescription></ItemDescription>
+<ItemTop>797</ItemTop>
+<ItemLeft>586</ItemLeft>
+<ItemWidth>195</ItemWidth>
+<ItemHeight>60</ItemHeight>
+<ItemData><![CDATA[[ftfilestoragews]?dsFileStorageExecuteUpload]]></ItemData>
+<ItemCallMode>cmSyncCall</ItemCallMode>
+<ItemIncludeSessionVariables>False</ItemIncludeSessionVariables>
+<ItemUserAuthentication>True</ItemUserAuthentication>
+<ItemInputParam name="Storage" type="STRING" mappedto="CONSTANTS" value="fileSystem" describe=""></ItemInputParam>
+<ItemInputParam name="File" type="OBJECT" mappedto="PROCESS" value="File" describe=""></ItemInputParam>
+<ItemInputParam name="FileName" type="STRING" mappedto="PROCESS" value="FileName" describe=""></ItemInputParam>
+<ItemOutputParam name="FileInfoID" type="STRING" mappedto="PROCESS" value="FileInfoID" describe=""></ItemOutputParam>
+<ItemOutputParam name="FileSize" type="STRING" mappedto="PROCESS" value="FileSize" describe=""></ItemOutputParam>
+<ItemOutputParam name="ContentType" type="STRING" mappedto="PROCESS" value="ContentType" describe=""></ItemOutputParam>
+<ItemOutputParam name="FileID" type="STRING" mappedto="PROCESS" value="FileID" describe=""></ItemOutputParam>
+</Item>
+<Item><ItemNumber>13</ItemNumber>
+ <ItemGUID>82EE3049-813A-4399-A74D-D4C309262ADE</ItemGUID>
+ 
+<ItemType>TCaseOpItem</ItemType>
+<ItemName>CaseOpItem2</ItemName>
+<ItemCaption>Проверка ObjectID</ItemCaption>
+<ItemDescription>Описание данного шага процесса
+</ItemDescription>
+<ItemTop>100</ItemTop>
+<ItemLeft>84</ItemLeft>
+<ItemWidth>200</ItemWidth>
+<ItemHeight>60</ItemHeight>
+<ItemData><![CDATA[var ObjectList =  getInputParams("ObjectList");
+if (ObjectList!=null && ObjectList.size() > 0) {
+    var APPLICATIONID = ObjectList.get(0).get("ObjectID");
+    setOutputParams("APPLICATIONID",APPLICATIONID);
+    return APPLICATIONID != null ? "NEXT" : "EXIT";
+}
+return "EXIT";
+
+
+]]></ItemData>
+<CaseType>JavaScript</CaseType>
+<ItemInputParam name="ObjectList" type="OBJECT" mappedto="PROCESS" value="ObjectList" describe=""></ItemInputParam>
+<ItemOutputParam name="APPLICATIONID" type="LONG" mappedto="PROCESS" value="APPLICATIONID" describe=""></ItemOutputParam>
+</Item>
+<Item><ItemNumber>14</ItemNumber>
+ <ItemGUID>D4D9336F-F274-4E89-97FD-07AEC572BABD</ItemGUID>
+ 
+<ItemType>TRemoteAction</ItemType>
+<ItemName>RemoteAction3</ItemName>
+<ItemCaption>IsNewReportGenerate false</ItemCaption>
+<ItemDescription>Описание данного шага процесса
+</ItemDescription>
+<ItemTop>445</ItemTop>
+<ItemLeft>79</ItemLeft>
+<ItemWidth>200</ItemWidth>
+<ItemHeight>60</ItemHeight>
+<ItemData><![CDATA[[frontws2]?documentModifyOld]]></ItemData>
+<ItemCallMode>cmSyncCall</ItemCallMode>
+<ItemIncludeSessionVariables>False</ItemIncludeSessionVariables>
+<ItemUserAuthentication>True</ItemUserAuthentication>
+<ItemInputParam name="DOCUMENTID" type="LONG" mappedto="PROCESS" value="APPLICATIONID" describe=""></ItemInputParam>
+<ItemInputParam name="IsNewReportGenerate" type="BOOLEAN" mappedto="CONSTANTS" value="false" describe=""></ItemInputParam>
+</Item>
+<Item><ItemNumber>15</ItemNumber>
+ <ItemGUID>87498B1E-F884-4A0F-834F-9778310A4D09</ItemGUID>
+ 
+<ItemType>TRemoteAction</ItemType>
+<ItemName>RemoteAction8</ItemName>
+<ItemCaption>IsNewReportGenerate true</ItemCaption>
+<ItemDescription>Описание данного шага процесса
+</ItemDescription>
+<ItemTop>612</ItemTop>
+<ItemLeft>583</ItemLeft>
+<ItemWidth>200</ItemWidth>
+<ItemHeight>60</ItemHeight>
+<ItemData><![CDATA[[frontws2]?documentModifyOld]]></ItemData>
+<ItemCallMode>cmSyncCall</ItemCallMode>
+<ItemIncludeSessionVariables>False</ItemIncludeSessionVariables>
+<ItemUserAuthentication>True</ItemUserAuthentication>
+<ItemInputParam name="DOCUMENTID" type="LONG" mappedto="PROCESS" value="APPLICATIONID" describe=""></ItemInputParam>
+<ItemInputParam name="IsNewReportGenerate" type="BOOLEAN" mappedto="CONSTANTS" value="true" describe=""></ItemInputParam>
+</Item>
+<Item><ItemNumber>16</ItemNumber>
+ <ItemGUID>DAA846DE-4710-4297-8712-9EBA1EA9E632</ItemGUID>
+ 
+<ItemType>TRemoteAction</ItemType>
+<ItemName>RemoteAction9</ItemName>
+<ItemCaption>Удаляем аттач из хранилища fileSystem, оставляем только в ecm</ItemCaption>
+<ItemDescription>Удаляем аттач из хранилища fileSystem, оставляем только в ecm
+</ItemDescription>
+<ItemTop>612</ItemTop>
+<ItemLeft>882</ItemLeft>
+<ItemWidth>200</ItemWidth>
+<ItemHeight>152</ItemHeight>
+<ItemData><![CDATA[[ftfilestoragews]?dsFileStorageExecuteDelete]]></ItemData>
+<ItemCallMode>cmSyncCall</ItemCallMode>
+<ItemIncludeSessionVariables>False</ItemIncludeSessionVariables>
+<ItemUserAuthentication>True</ItemUserAuthentication>
+<ItemInputParam name="FileID" type="STRING" mappedto="PROCESS" value="FileID" describe=""></ItemInputParam>
+<ItemInputParam name="Storage" type="STRING" mappedto="CONSTANTS" value="fileSystem" describe=""></ItemInputParam>
+</Item>
+<Item><ItemNumber>17</ItemNumber>
+ <ItemGUID>52F581C7-C94B-4D36-BDB4-21412F92903F</ItemGUID>
+ 
+<ItemType>TRemoteAction</ItemType>
+<ItemName>RemoteAction10</ItemName>
+<ItemCaption>Создаем запись fileInfo</ItemCaption>
+<ItemDescription></ItemDescription>
+<ItemTop>897</ItemTop>
+<ItemLeft>324</ItemLeft>
+<ItemWidth>200</ItemWidth>
+<ItemHeight>60</ItemHeight>
+<ItemData><![CDATA[[corews]?dssavefileinfo]]></ItemData>
+<ItemCallMode>cmSyncCall</ItemCallMode>
+<ItemIncludeSessionVariables>False</ItemIncludeSessionVariables>
+<ItemUserAuthentication>True</ItemUserAuthentication>
+<ItemInputParam name="fileInfoList" type="OBJECT" mappedto="PROCESS" value="fileInfoList" describe=""></ItemInputParam>
+<ItemOutputParam name="Result" type="OBJECT" mappedto="PROCESS" value="FileInfoCreateRes" describe=""></ItemOutputParam>
+</Item>
+<Item><ItemNumber>18</ItemNumber>
+ <ItemGUID>01086A14-E781-4CF4-AC45-21B951958E06</ItemGUID>
+ 
+<ItemType>TJavaScriptItem</ItemType>
+<ItemName>JavaScriptItem4</ItemName>
+<ItemCaption>get FileInfoId after creation</ItemCaption>
+<ItemDescription></ItemDescription>
+<ItemTop>893</ItemTop>
+<ItemLeft>586</ItemLeft>
+<ItemWidth>195</ItemWidth>
+<ItemHeight>60</ItemHeight>
+<ItemData><![CDATA[var fileInfoCreateRes = getInputParams("FileInfoCreateRes") || getNewList(); 
+if(fileInfoCreateRes.size()>0){
+   setOutputParams("FileInfoIDnew", fileInfoCreateRes.get(0).get("FILEINFOID"));
+}
+
+]]></ItemData>
+<ItemInputParam name="FileInfoCreateRes" type="OBJECT" mappedto="PROCESS" value="FileInfoCreateRes" describe=""></ItemInputParam>
+<ItemOutputParam name="FileInfoIDnew" type="STRING" mappedto="PROCESS" value="FileInfoIDnew" describe=""></ItemOutputParam>
+</Item>
+</Items>
+<Links><Link>
+<LinkNumber>1</LinkNumber>
+<LinkType>TLink</LinkType>
+<ItemName>Link4</ItemName>
+<LinkCaption>EXIT</LinkCaption>
+<Caption>EXIT</Caption>
+<LinkStartItem>4</LinkStartItem>
+<LinkEndItem>2</LinkEndItem>
+<MiddlePointTop>460</MiddlePointTop>
+<MiddlePointLeft>629</MiddlePointLeft>
+<MiddlePoint2Top>0</MiddlePoint2Top>
+<MiddlePoint2Left>0</MiddlePoint2Left>
+</Link><Link>
+<LinkNumber>2</LinkNumber>
+<LinkType>TLink</LinkType>
+<ItemName>Link5</ItemName>
+<LinkCaption></LinkCaption>
+<Caption>Link5</Caption>
+<LinkStartItem>3</LinkStartItem>
+<LinkEndItem>5</LinkEndItem>
+<MiddlePointTop>273</MiddlePointTop>
+<MiddlePointLeft>183</MiddlePointLeft>
+<MiddlePoint2Top>0</MiddlePoint2Top>
+<MiddlePoint2Left>0</MiddlePoint2Left>
+</Link><Link>
+<LinkNumber>3</LinkNumber>
+<LinkType>TExceptionLink</LinkType>
+<ItemName>ExceptionLink1</ItemName>
+<LinkCaption></LinkCaption>
+<Caption>Link7</Caption>
+<LinkStartItem>6</LinkStartItem>
+<LinkEndItem>2</LinkEndItem>
+<MiddlePointTop>549</MiddlePointTop>
+<MiddlePointLeft>378</MiddlePointLeft>
+<MiddlePoint2Top>0</MiddlePoint2Top>
+<MiddlePoint2Left>0</MiddlePoint2Left>
+</Link><Link>
+<LinkNumber>4</LinkNumber>
+<LinkType>TLink</LinkType>
+<ItemName>Link8</ItemName>
+<LinkCaption></LinkCaption>
+<Caption>Link9</Caption>
+<LinkStartItem>6</LinkStartItem>
+<LinkEndItem>7</LinkEndItem>
+<MiddlePointTop>600</MiddlePointTop>
+<MiddlePointLeft>150</MiddlePointLeft>
+<MiddlePoint2Top>0</MiddlePoint2Top>
+<MiddlePoint2Left>0</MiddlePoint2Left>
+</Link><Link>
+<LinkNumber>5</LinkNumber>
+<LinkType>TLink</LinkType>
+<ItemName>Link7</ItemName>
+<LinkCaption></LinkCaption>
+<Caption>Link9</Caption>
+<LinkStartItem>7</LinkStartItem>
+<LinkEndItem>8</LinkEndItem>
+<MiddlePointTop>692</MiddlePointTop>
+<MiddlePointLeft>171</MiddlePointLeft>
+<MiddlePoint2Top>0</MiddlePoint2Top>
+<MiddlePoint2Left>0</MiddlePoint2Left>
+</Link><Link>
+<LinkNumber>6</LinkNumber>
+<LinkType>TLink</LinkType>
+<ItemName>Link9</ItemName>
+<LinkCaption></LinkCaption>
+<Caption>Link11</Caption>
+<LinkStartItem>8</LinkStartItem>
+<LinkEndItem>9</LinkEndItem>
+<MiddlePointTop>778</MiddlePointTop>
+<MiddlePointLeft>218</MiddlePointLeft>
+<MiddlePoint2Top>0</MiddlePoint2Top>
+<MiddlePoint2Left>0</MiddlePoint2Left>
+</Link><Link>
+<LinkNumber>7</LinkNumber>
+<LinkType>TLink</LinkType>
+<ItemName>Link3</ItemName>
+<LinkCaption></LinkCaption>
+<Caption>Link10</Caption>
+<LinkStartItem>5</LinkStartItem>
+<LinkEndItem>4</LinkEndItem>
+<MiddlePointTop>354</MiddlePointTop>
+<MiddlePointLeft>183</MiddlePointLeft>
+<MiddlePoint2Top>0</MiddlePoint2Top>
+<MiddlePoint2Left>0</MiddlePoint2Left>
+</Link><Link>
+<LinkNumber>8</LinkNumber>
+<LinkType>TExceptionLink</LinkType>
+<ItemName>ExceptionLink3</ItemName>
+<LinkCaption></LinkCaption>
+<Caption>Link12</Caption>
+<LinkStartItem>3</LinkStartItem>
+<LinkEndItem>5</LinkEndItem>
+<MiddlePointTop>273</MiddlePointTop>
+<MiddlePointLeft>183</MiddlePointLeft>
+<MiddlePoint2Top>0</MiddlePoint2Top>
+<MiddlePoint2Left>0</MiddlePoint2Left>
+</Link><Link>
+<LinkNumber>9</LinkNumber>
+<LinkType>TExceptionLink</LinkType>
+<ItemName>ExceptionLink2</ItemName>
+<LinkCaption></LinkCaption>
+<Caption>Link13</Caption>
+<LinkStartItem>8</LinkStartItem>
+<LinkEndItem>9</LinkEndItem>
+<MiddlePointTop>799</MiddlePointTop>
+<MiddlePointLeft>133</MiddlePointLeft>
+<MiddlePoint2Top>0</MiddlePoint2Top>
+<MiddlePoint2Left>0</MiddlePoint2Left>
+</Link><Link>
+<LinkNumber>10</LinkNumber>
+<LinkType>TLink</LinkType>
+<ItemName>Link10</ItemName>
+<LinkCaption></LinkCaption>
+<Caption>Link14</Caption>
+<LinkStartItem>9</LinkStartItem>
+<LinkEndItem>11</LinkEndItem>
+<MiddlePointTop>875</MiddlePointTop>
+<MiddlePointLeft>172</MiddlePointLeft>
+<MiddlePoint2Top>0</MiddlePoint2Top>
+<MiddlePoint2Left>0</MiddlePoint2Left>
+</Link><Link>
+<LinkNumber>11</LinkNumber>
+<LinkType>TLink</LinkType>
+<ItemName>Link14</ItemName>
+<LinkCaption></LinkCaption>
+<Caption>Link20</Caption>
+<LinkStartItem>12</LinkStartItem>
+<LinkEndItem>10</LinkEndItem>
+<MiddlePointTop>776</MiddlePointTop>
+<MiddlePointLeft>642</MiddlePointLeft>
+<MiddlePoint2Top>0</MiddlePoint2Top>
+<MiddlePoint2Left>0</MiddlePoint2Left>
+</Link><Link>
+<LinkNumber>12</LinkNumber>
+<LinkType>TExceptionLink</LinkType>
+<ItemName>ExceptionLink7</ItemName>
+<LinkCaption></LinkCaption>
+<Caption>Link21</Caption>
+<LinkStartItem>12</LinkStartItem>
+<LinkEndItem>10</LinkEndItem>
+<MiddlePointTop>769</MiddlePointTop>
+<MiddlePointLeft>724</MiddlePointLeft>
+<MiddlePoint2Top>0</MiddlePoint2Top>
+<MiddlePoint2Left>0</MiddlePoint2Left>
+</Link><Link>
+<LinkNumber>13</LinkNumber>
+<LinkType>TLink</LinkType>
+<ItemName>Link1</ItemName>
+<LinkCaption></LinkCaption>
+<Caption>Link18</Caption>
+<LinkStartItem>1</LinkStartItem>
+<LinkEndItem>13</LinkEndItem>
+<MiddlePointTop>92</MiddlePointTop>
+<MiddlePointLeft>183</MiddlePointLeft>
+<MiddlePoint2Top>0</MiddlePoint2Top>
+<MiddlePoint2Left>0</MiddlePoint2Left>
+</Link><Link>
+<LinkNumber>14</LinkNumber>
+<LinkType>TLink</LinkType>
+<ItemName>Link6</ItemName>
+<LinkCaption>NEXT</LinkCaption>
+<Caption>NEXT</Caption>
+<LinkStartItem>13</LinkStartItem>
+<LinkEndItem>3</LinkEndItem>
+<MiddlePointTop>172</MiddlePointTop>
+<MiddlePointLeft>183</MiddlePointLeft>
+<MiddlePoint2Top>0</MiddlePoint2Top>
+<MiddlePoint2Left>0</MiddlePoint2Left>
+</Link><Link>
+<LinkNumber>15</LinkNumber>
+<LinkType>TLink</LinkType>
+<ItemName>Link12</ItemName>
+<LinkCaption>EXIT</LinkCaption>
+<Caption>EXIT</Caption>
+<LinkStartItem>13</LinkStartItem>
+<LinkEndItem>2</LinkEndItem>
+<MiddlePointTop>131</MiddlePointTop>
+<MiddlePointLeft>702</MiddlePointLeft>
+<MiddlePoint2Top>0</MiddlePoint2Top>
+<MiddlePoint2Left>0</MiddlePoint2Left>
+</Link><Link>
+<LinkNumber>16</LinkNumber>
+<LinkType>TLink</LinkType>
+<ItemName>Link15</ItemName>
+<LinkCaption></LinkCaption>
+<Caption>Link20</Caption>
+<LinkStartItem>15</LinkStartItem>
+<LinkEndItem>2</LinkEndItem>
+<MiddlePointTop>591</MiddlePointTop>
+<MiddlePointLeft>633</MiddlePointLeft>
+<MiddlePoint2Top>0</MiddlePoint2Top>
+<MiddlePoint2Left>0</MiddlePoint2Left>
+</Link><Link>
+<LinkNumber>17</LinkNumber>
+<LinkType>TExceptionLink</LinkType>
+<ItemName>ExceptionLink6</ItemName>
+<LinkCaption></LinkCaption>
+<Caption>Link22</Caption>
+<LinkStartItem>15</LinkStartItem>
+<LinkEndItem>2</LinkEndItem>
+<MiddlePointTop>594</MiddlePointTop>
+<MiddlePointLeft>672</MiddlePointLeft>
+<MiddlePoint2Top>0</MiddlePoint2Top>
+<MiddlePoint2Left>0</MiddlePoint2Left>
+</Link><Link>
+<LinkNumber>18</LinkNumber>
+<LinkType>TLink</LinkType>
+<ItemName>Link16</ItemName>
+<LinkCaption>GO</LinkCaption>
+<Caption>GO</Caption>
+<LinkStartItem>4</LinkStartItem>
+<LinkEndItem>14</LinkEndItem>
+<MiddlePointTop>434</MiddlePointTop>
+<MiddlePointLeft>248</MiddlePointLeft>
+<MiddlePoint2Top>0</MiddlePoint2Top>
+<MiddlePoint2Left>0</MiddlePoint2Left>
+</Link><Link>
+<LinkNumber>19</LinkNumber>
+<LinkType>TLink</LinkType>
+<ItemName>Link2</ItemName>
+<LinkCaption></LinkCaption>
+<Caption>Link23</Caption>
+<LinkStartItem>14</LinkStartItem>
+<LinkEndItem>6</LinkEndItem>
+<MiddlePointTop>518</MiddlePointTop>
+<MiddlePointLeft>157</MiddlePointLeft>
+<MiddlePoint2Top>0</MiddlePoint2Top>
+<MiddlePoint2Left>0</MiddlePoint2Left>
+</Link><Link>
+<LinkNumber>20</LinkNumber>
+<LinkType>TExceptionLink</LinkType>
+<ItemName>ExceptionLink8</ItemName>
+<LinkCaption></LinkCaption>
+<Caption>Link24</Caption>
+<LinkStartItem>14</LinkStartItem>
+<LinkEndItem>6</LinkEndItem>
+<MiddlePointTop>518</MiddlePointTop>
+<MiddlePointLeft>180</MiddlePointLeft>
+<MiddlePoint2Top>0</MiddlePoint2Top>
+<MiddlePoint2Left>0</MiddlePoint2Left>
+</Link><Link>
+<LinkNumber>21</LinkNumber>
+<LinkType>TLink</LinkType>
+<ItemName>Link13</ItemName>
+<LinkCaption></LinkCaption>
+<Caption>Link24</Caption>
+<LinkStartItem>10</LinkStartItem>
+<LinkEndItem>16</LinkEndItem>
+<MiddlePointTop>724</MiddlePointTop>
+<MiddlePointLeft>805</MiddlePointLeft>
+<MiddlePoint2Top>0</MiddlePoint2Top>
+<MiddlePoint2Left>0</MiddlePoint2Left>
+</Link><Link>
+<LinkNumber>22</LinkNumber>
+<LinkType>TLink</LinkType>
+<ItemName>Link17</ItemName>
+<LinkCaption></LinkCaption>
+<Caption>Link25</Caption>
+<LinkStartItem>16</LinkStartItem>
+<LinkEndItem>15</LinkEndItem>
+<MiddlePointTop>626</MiddlePointTop>
+<MiddlePointLeft>806</MiddlePointLeft>
+<MiddlePoint2Top>0</MiddlePoint2Top>
+<MiddlePoint2Left>0</MiddlePoint2Left>
+</Link><Link>
+<LinkNumber>23</LinkNumber>
+<LinkType>TExceptionLink</LinkType>
+<ItemName>ExceptionLink9</ItemName>
+<LinkCaption></LinkCaption>
+<Caption>Link26</Caption>
+<LinkStartItem>16</LinkStartItem>
+<LinkEndItem>15</LinkEndItem>
+<MiddlePointTop>640</MiddlePointTop>
+<MiddlePointLeft>796</MiddlePointLeft>
+<MiddlePoint2Top>0</MiddlePoint2Top>
+<MiddlePoint2Left>0</MiddlePoint2Left>
+</Link><Link>
+<LinkNumber>24</LinkNumber>
+<LinkType>TExceptionLink</LinkType>
+<ItemName>ExceptionLink10</ItemName>
+<LinkCaption></LinkCaption>
+<Caption>Link27</Caption>
+<LinkStartItem>10</LinkStartItem>
+<LinkEndItem>16</LinkEndItem>
+<MiddlePointTop>714</MiddlePointTop>
+<MiddlePointLeft>805</MiddlePointLeft>
+<MiddlePoint2Top>0</MiddlePoint2Top>
+<MiddlePoint2Left>0</MiddlePoint2Left>
+</Link><Link>
+<LinkNumber>25</LinkNumber>
+<LinkType>TLink</LinkType>
+<ItemName>Link11</ItemName>
+<LinkCaption></LinkCaption>
+<Caption>Link25</Caption>
+<LinkStartItem>11</LinkStartItem>
+<LinkEndItem>17</LinkEndItem>
+<MiddlePointTop>916</MiddlePointTop>
+<MiddlePointLeft>298</MiddlePointLeft>
+<MiddlePoint2Top>0</MiddlePoint2Top>
+<MiddlePoint2Left>0</MiddlePoint2Left>
+</Link><Link>
+<LinkNumber>26</LinkNumber>
+<LinkType>TExceptionLink</LinkType>
+<ItemName>ExceptionLink4</ItemName>
+<LinkCaption></LinkCaption>
+<Caption>Link26</Caption>
+<LinkStartItem>11</LinkStartItem>
+<LinkEndItem>17</LinkEndItem>
+<MiddlePointTop>937</MiddlePointTop>
+<MiddlePointLeft>295</MiddlePointLeft>
+<MiddlePoint2Top>0</MiddlePoint2Top>
+<MiddlePoint2Left>0</MiddlePoint2Left>
+</Link><Link>
+<LinkNumber>27</LinkNumber>
+<LinkType>TLink</LinkType>
+<ItemName>Link18</ItemName>
+<LinkCaption></LinkCaption>
+<Caption>Link27</Caption>
+<LinkStartItem>17</LinkStartItem>
+<LinkEndItem>18</LinkEndItem>
+<MiddlePointTop>918</MiddlePointTop>
+<MiddlePointLeft>556</MiddlePointLeft>
+<MiddlePoint2Top>0</MiddlePoint2Top>
+<MiddlePoint2Left>0</MiddlePoint2Left>
+</Link><Link>
+<LinkNumber>28</LinkNumber>
+<LinkType>TExceptionLink</LinkType>
+<ItemName>ExceptionLink5</ItemName>
+<LinkCaption></LinkCaption>
+<Caption>Link28</Caption>
+<LinkStartItem>17</LinkStartItem>
+<LinkEndItem>18</LinkEndItem>
+<MiddlePointTop>933</MiddlePointTop>
+<MiddlePointLeft>551</MiddlePointLeft>
+<MiddlePoint2Top>0</MiddlePoint2Top>
+<MiddlePoint2Left>0</MiddlePoint2Left>
+</Link><Link>
+<LinkNumber>29</LinkNumber>
+<LinkType>TLink</LinkType>
+<ItemName>Link19</ItemName>
+<LinkCaption></LinkCaption>
+<Caption>Link29</Caption>
+<LinkStartItem>18</LinkStartItem>
+<LinkEndItem>12</LinkEndItem>
+<MiddlePointTop>870</MiddlePointTop>
+<MiddlePointLeft>641</MiddlePointLeft>
+<MiddlePoint2Top>0</MiddlePoint2Top>
+<MiddlePoint2Left>0</MiddlePoint2Left>
+</Link><Link>
+<LinkNumber>30</LinkNumber>
+<LinkType>TExceptionLink</LinkType>
+<ItemName>ExceptionLink11</ItemName>
+<LinkCaption></LinkCaption>
+<Caption>Link30</Caption>
+<LinkStartItem>18</LinkStartItem>
+<LinkEndItem>12</LinkEndItem>
+<MiddlePointTop>874</MiddlePointTop>
+<MiddlePointLeft>724</MiddlePointLeft>
+<MiddlePoint2Top>0</MiddlePoint2Top>
+<MiddlePoint2Left>0</MiddlePoint2Left>
+</Link>
+</Links>
+</Diagram>
